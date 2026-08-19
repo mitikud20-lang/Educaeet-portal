@@ -347,13 +347,6 @@
     </div>
 
     <script>
-        // Insert API Key here
-        // ከዚህ በፊት የነበረው፦
-// const GEMINI_API_KEY = "AQ.Ab8RN6K2oV2IBZF_dDs_QFoLt6t7siGPGeY8Vgdr0yX9u6HcYw";
-
-// አሁን እንዲህ አድርገህ ቀይረው፦
-const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
-
         const chatForm = document.getElementById('chatForm');
         const userInput = document.getElementById('userInput');
         const chatBody = document.getElementById('chatBody');
@@ -377,35 +370,25 @@ const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
             scrollToBottom();
 
             try {
-                // Updated model name to gemini-3.6-flash
-                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`;
-                
-                const response = await fetch(endpoint, {
+                // ጥያቄውን ወደ Backend Endpoint (/api/chat) ይልካል
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        system_instruction: {
-                            parts: [{ text: "You are Educaeet AI Assistant, an expert medical and health science tutor. Provide concise, well-structured, and accurate answers." }]
-                        },
-                        contents: [
-                            { parts: [{ text: text }] }
-                        ]
-                    })
+                    body: JSON.stringify({ message: text })
                 });
 
                 const data = await response.json();
                 removeLoading(loadingId);
 
-                if (response.ok && data.candidates && data.candidates[0].content.parts[0].text) {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    appendBotMessage(aiReply);
+                if (response.ok && data.reply) {
+                    appendBotMessage(data.reply);
                 } else {
-                    const errMsg = data.error ? data.error.message : "API Request Error";
+                    const errMsg = data.error || "API Request Error";
                     appendBotMessage(`Error: ${errMsg}`);
                 }
             } catch (err) {
                 removeLoading(loadingId);
-                appendBotMessage("Connection failed. Please check your internet connection.");
+                appendBotMessage("Connection failed. Please check your server connection.");
             }
 
             scrollToBottom();
