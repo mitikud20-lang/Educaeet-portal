@@ -181,6 +181,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      text-decoration: none;
     }
 
     .hero-image-wrapper {
@@ -510,19 +511,11 @@
       </div>
 
       <!-- LOGOUT BUTTON -->
-      <!-- የ Logout Button አጻጻፍ -->
-<button onclick="logoutUser()" class="logout-btn">Logout</button>
-
-<script>
-function logoutUser() {
-    // የተቀመጡ የተጠቃሚ መረጃዎች (Token/Session) ካሉ ለማፅዳት
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    // በቀጥታ ወደ register.html ለመመለስ
-    window.location.href = '/register.html';
-}
-</script>
+      <button id="logoutBtn" class="logout-btn-nav">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
 
   <!-- HERO BANNER SECTION -->
   <section class="hero-section">
@@ -533,10 +526,9 @@ function logoutUser() {
         
         <div class="hero-btns">
           <a href="#modules" class="btn-primary-gold"><i class="fa-solid fa-rocket"></i> ትምህርቶችን ይጀምሩ</a>
-          <!-- HERO AI BUTTON -->
-<a href="ai-assistant.html" class="btn-secondary-ai">
-  <i class="fa-solid fa-robot"></i> AI ረዳቱን ይጠይቁ
-</a>
+          <a href="ai-assistant.html" class="btn-secondary-ai">
+            <i class="fa-solid fa-robot"></i> AI ረዳቱን ይጠይቁ
+          </a>
         </div>
       </div>
 
@@ -617,14 +609,15 @@ function logoutUser() {
       </a>
 
       <!-- 4. AI ASSISTANT -->
-<a href="ai-assistant.html" class="module-card">
-  <div class="card-icon bg-ai"><i class="fa-solid fa-robot"></i></div>
-  <h3>AI Study Assistant</h3>
-  <p>Get instant explanations for complex medical terms and questions 24/7.</p>
-  <div class="card-arrow" style="color: var(--ai-purple);">
-    AI ረዳቱን ይክፈቱ <i class="fa-solid fa-arrow-right"></i>
-  </div>
-</a>
+      <a href="ai-assistant.html" class="module-card">
+        <div class="card-icon bg-ai"><i class="fa-solid fa-robot"></i></div>
+        <h3>AI Study Assistant</h3>
+        <p>Get instant explanations for complex medical terms and questions 24/7.</p>
+        <div class="card-arrow" style="color: var(--ai-purple);">
+          AI ረዳቱን ይክፈቱ <i class="fa-solid fa-arrow-right"></i>
+        </div>
+      </a>
+    </div>
 
     <!-- SKILLS BANNER -->
     <div class="skills-banner">
@@ -712,13 +705,6 @@ function logoutUser() {
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // GEMINI API KEY CONFIGURATION
-    // ከዚህ በፊት የነበረው፦
-// const GEMINI_API_KEY = "AQ.Ab8RN6K2oV2IBZF_dDs_QFoLt6t7siGPGeY8Vgdr0yX9u6HcYw";
-
-// አሁን እንዲህ አድርገህ ቀይረው፦
-const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
-
     document.addEventListener("DOMContentLoaded", () => {
       // AUTH CHECK: ተማሪው Login ካላደረገ ወደ register.html ይመልሰዋል
       const isLoggedIn = localStorage.getItem("educaeet_is_logged_in");
@@ -730,41 +716,54 @@ const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
       // PROFILE DATA LOAD
       loadProfileData();
 
-      // MODAL CONTROLS
+      // MODAL CONTROLS & SAFE EVENT LISTENERS
       const aiModal = document.getElementById("aiModal");
       const profileModal = document.getElementById("profileModal");
 
-      document.getElementById("openAiHeroBtn").addEventListener("click", () => aiModal.classList.add("active"));
-      document.getElementById("openAiCardBtn").addEventListener("click", () => aiModal.classList.add("active"));
-      document.getElementById("closeAiModalBtn").addEventListener("click", () => aiModal.classList.remove("active"));
+      const closeAiModalBtn = document.getElementById("closeAiModalBtn");
+      if (closeAiModalBtn && aiModal) {
+        closeAiModalBtn.addEventListener("click", () => aiModal.classList.remove("active"));
+      }
 
-      document.getElementById("openProfileModalBtn").addEventListener("click", () => profileModal.classList.add("active"));
-      document.getElementById("closeProfileModalBtn").addEventListener("click", () => profileModal.classList.remove("active"));
+      const openProfileModalBtn = document.getElementById("openProfileModalBtn");
+      if (openProfileModalBtn && profileModal) {
+        openProfileModalBtn.addEventListener("click", () => profileModal.classList.add("active"));
+      }
+
+      const closeProfileModalBtn = document.getElementById("closeProfileModalBtn");
+      if (closeProfileModalBtn && profileModal) {
+        closeProfileModalBtn.addEventListener("click", () => profileModal.classList.remove("active"));
+      }
 
       // PROFILE SAVE
-      document.getElementById("profileForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const updatedProfile = {
-          name: document.getElementById("studentName").value.trim(),
-          id: document.getElementById("studentId").value.trim(),
-          email: document.getElementById("studentEmail").value.trim(),
-          department: document.getElementById("studentDept").value
-        };
+      const profileForm = document.getElementById("profileForm");
+      if (profileForm) {
+        profileForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const updatedProfile = {
+            name: document.getElementById("studentName").value.trim(),
+            id: document.getElementById("studentId").value.trim(),
+            email: document.getElementById("studentEmail").value.trim(),
+            department: document.getElementById("studentDept").value
+          };
 
-        localStorage.setItem("educaeet_user_profile", JSON.stringify(updatedProfile));
-        localStorage.setItem("currentUser", JSON.stringify(updatedProfile)); // sync with register format
-        loadProfileData();
-        profileModal.classList.remove("active");
-        alert("የፕሮፋይል መረጃዎ በትክክል ተቀምጧል!");
-      });
+          localStorage.setItem("educaeet_user_profile", JSON.stringify(updatedProfile));
+          localStorage.setItem("currentUser", JSON.stringify(updatedProfile));
+          loadProfileData();
+          if (profileModal) profileModal.classList.remove("active");
+          alert("የፕሮፋይል መረጃዎ በትክክል ተቀምጧል!");
+        });
+      }
 
       // LOGOUT ACTION
-      document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", handleLogout);
+      }
     });
 
     // LOAD PROFILE DATA FROM LOCALSTORAGE
     function loadProfileData() {
-      // register.html ወይም educaeet_user_profile መረጃን መፈለግ
       const savedUser = localStorage.getItem("educaeet_user_profile") || localStorage.getItem("currentUser");
       
       const profileData = savedUser ? JSON.parse(savedUser) : {
@@ -774,29 +773,37 @@ const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
         department: "Clinical Nursing"
       };
 
-      document.getElementById("studentName").value = profileData.name || "";
-      document.getElementById("studentId").value = profileData.id || "MAHSC/2026/01";
-      document.getElementById("studentEmail").value = profileData.email || "";
-      if (profileData.department) {
-        document.getElementById("studentDept").value = profileData.department;
-      }
+      const nameElem = document.getElementById("studentName");
+      const idElem = document.getElementById("studentId");
+      const emailElem = document.getElementById("studentEmail");
+      const deptElem = document.getElementById("studentDept");
 
-      document.getElementById("navUserName").textContent = profileData.name || "User Profile";
+      if (nameElem) nameElem.value = profileData.name || "";
+      if (idElem) idElem.value = profileData.id || "MAHSC/2026/01";
+      if (emailElem) emailElem.value = profileData.email || "";
+      if (deptElem && profileData.department) deptElem.value = profileData.department;
+
+      const navUserName = document.getElementById("navUserName");
+      if (navUserName) navUserName.textContent = profileData.name || "User Profile";
+
       const initial = profileData.name ? profileData.name.charAt(0).toUpperCase() : "ተ";
-      document.getElementById("navAvatarText").textContent = initial;
-      document.getElementById("modalAvatarText").textContent = initial;
+      const navAvatarText = document.getElementById("navAvatarText");
+      const modalAvatarText = document.getElementById("modalAvatarText");
+
+      if (navAvatarText) navAvatarText.textContent = initial;
+      if (modalAvatarText) modalAvatarText.textContent = initial;
     }
 
     // LOGOUT FUNCTION
     function handleLogout() {
       if (confirm("ከሲስተሙ መውጣት (Logout ማድረግ) ይፈልጋሉ?")) {
-        localStorage.removeItem("educaeet_is_logged_in");
-        localStorage.removeItem("currentUser");
+        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "register.html";
       }
     }
 
-    // EDUCAEET AI ASSISTANT (STABLE GEMINI API)
+    // EDUCAEET AI ASSISTANT (BACKEND SERVER INTEGRATION)
     async function sendAiMessage() {
       const inputField = document.getElementById("aiInputField");
       const chatContainer = document.getElementById("chatContainer");
@@ -806,44 +813,29 @@ const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
       const userMessage = inputField.value.trim();
       if (!userMessage) return;
 
-      // 1. የተማሪውን ጥያቄ በስክሪን ላይ በቀኝ በኩል ማሳየት
       appendBubble("user", userMessage);
       inputField.value = "";
 
-      // 2. ጊዜያዊ የ AI መልእክት በግራ በኩል ማሳየት
       const loadingId = appendBubble("ai", "Thinking... ⏳");
 
-      const systemPrompt = "You are the Official Academic & Medical AI Assistant for Educaeet Portal at Mizan-Aman Health Science College. Answer student questions comprehensively, clearly, and strictly in English.";
-
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [
-              {
-                role: "user",
-                parts: [{ text: `${systemPrompt}\n\nStudent Question: ${userMessage}` }]
-              }
-            ]
-          })
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage })
         });
 
         const data = await response.json();
 
-        if (response.ok && data.candidates && data.candidates[0] && data.candidates[0].content.parts[0].text) {
-          const aiReply = data.candidates[0].content.parts[0].text;
-          updateBubble(loadingId, aiReply);
+        if (response.ok && data.reply) {
+          updateBubble(loadingId, data.reply);
         } else {
-          console.error("Gemini Error:", data);
-          updateBubble(loadingId, "Please paste a valid Gemini API key.");
+          updateBubble(loadingId, data.error || "ይቅርታ፣ መልስ ለማግኘት አልተቻለም።");
         }
 
       } catch (error) {
         console.error("Fetch Error:", error);
-        updateBubble(loadingId, "Network error! Please check your internet connection.");
+        updateBubble(loadingId, "የመረብ ግንኙነት ስህተት! እባክዎ ኢንተርኔትዎን ያረጋግጡ።");
       }
     }
 
