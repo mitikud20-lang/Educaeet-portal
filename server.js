@@ -3,42 +3,58 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Body parser middleware for handling JSON & Form requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (HTML, CSS, JavaScript, Images)
 app.use(express.static(__dirname));
 
-// 1. Home Route -> Dashboard
+// AI Chat Endpoint (API Key-ን ከ Environment Variable ተጠቅሞ Googleን ይጠይቃል)
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({ error: 'GEMINI_API_KEY አልተዘጋጀም!' });
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: message }] }]
+        })
+      }
+    );
+
+    const data = await response.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'ምንም መልስ አልተገኘም።';
+    res.json({ reply });
+  } catch (err) {
+    res.status(500).json({ error: 'የ AI አገልግሎት ችግር አጋጥሞታል።' });
+  }
+});
+
+// Home Route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// 2. Logout Route
+// Logout Route
 app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-// 3. Dynamic Route for HTML pages (handles /register, /login, /ai-assistant, etc.)
+// Dynamic Route for HTML pages
 app.get('/:page', (req, res, next) => {
   const pageName = req.params.page;
-
-  // Skip if request includes a file extension (like .png, .css)
-  if (pageName.includes('.')) {
-    return next();
-  }
-
-  const filePath = path.join(__dirname, `${pageName}.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      // If requested page doesn't exist, redirect to home
-      res.redirect('/');
-    }
+  if (pageName.includes('.')) return next();
+  res.sendFile(path.join(__dirname, `${pageName}.html`), (err) => {
+    if (err) res.redirect('/');
   });
 });
 
-// Start the Express server
 app.listen(PORT, () => {
-  console.log(`Educaeet Portal Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
