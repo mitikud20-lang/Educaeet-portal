@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -10,40 +11,37 @@ const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// static ፋይሎችን ማቅረብ
 app.use(express.static(__dirname));
 
-// Routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
+// API Key ማረጋገጫና Gemini Initialise ማድረግ
+const getGeminiModel = () => {
+    const apiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : null;
+    if (!apiKey) return null;
+    const genAI = new GoogleGenerativeAI(apiKey);
+    return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+};
 
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
+// Explicit Routes for Pages
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'register.html')));
+app.get('/ai-assistant', (req, res) => res.sendFile(path.join(__dirname, 'ai-assistant.html')));
 
-app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, 'register.html'));
-});
+// Logout Direct Redirect
+app.get('/logout', (req, res) => res.redirect('/register.html'));
 
-app.get('/logout', (req, res) => {
-    res.redirect('/register.html');
-});
-
-// Gemini AI Chat API
+// AI Chat API
 app.post('/api/chat', async (req, res) => {
     try {
         const { message } = req.body;
-        if (!message) {
-            return res.status(400).json({ error: "መልእክት አልተላከም" });
-        }
+        if (!message) return res.status(400).json({ error: "መልእክት አልተላከም" });
 
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: "GEMINI_API_KEY አልተዋቀረም።" });
+        const model = getGeminiModel();
+        if (!model) {
+            return res.status(500).json({ error: "GEMINI_API_KEY በትክክል አልተዋቀረም።" });
         }
-
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(message);
         const response = await result.response;
@@ -51,15 +49,15 @@ app.post('/api/chat', async (req, res) => {
 
         return res.json({ reply: text || "ምንም መልስ አልተገኘም።" });
     } catch (error) {
-        console.error("AI Server Error:", error);
-        return res.status(500).json({ error: error.message });
+        console.error("Gemini API Error:", error);
+        return res.status(500).json({ error: "API Key Error: " + error.message });
     }
 });
 
-// Catch-all route
+// Any file fallback
 app.get('*', (req, res) => {
-    const requestedPath = path.join(__dirname, req.path);
-    res.sendFile(requestedPath, (err) => {
+    const filePath = path.join(__dirname, req.path);
+    res.sendFile(filePath, (err) => {
         if (err) {
             res.sendFile(path.join(__dirname, 'dashboard.html'));
         }
