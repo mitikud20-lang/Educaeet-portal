@@ -94,3 +94,7 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Educaeet Server running on port ${PORT}`);
 });
+// Logout ሲደረግ በቀጥታ ወደ register.html Redirect ለማድረግ
+app.get('/logout', (req, res) => {
+    res.redirect('/register.html');
+});
