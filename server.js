@@ -1,5 +1,4 @@
-
-const express = require('express');
+ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -12,7 +11,7 @@ const PORT = process.env.PORT || 10000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// static ፋይሎችን ማቅረብ
+// static ፋይሎችን (CSS, JS, Images) ማቅረብ
 app.use(express.static(__dirname));
 
 // API Key ማረጋገጫና Gemini Initialise ማድረግ
@@ -23,16 +22,29 @@ const getGeminiModel = () => {
     return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 };
 
-// Explicit Routes for Pages
+// 1. የገጾች ዋና ዋና Routes (ስሞቹ በካፒታልም ሆነ በትንሽ ፊደል ቢጻፉ እንዲሰሩ)
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'register.html')));
 app.get('/ai-assistant', (req, res) => res.sendFile(path.join(__dirname, 'ai-assistant.html')));
 
-// Logout Direct Redirect
+// በ ሪፖዚቶሪህ ውስጥ ላሉት የፋይል ስሞች (ከነ space እና Capital ፊደሎቻቸው) የተዘጋጁ አሊያሶች
+app.get(['/lectureppt', '/lectureppt.html', '/Lectureppt.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'Lectureppt.html'));
+});
+
+app.get(['/lecturevido', '/lecturevido.html', '/lecture vido.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'lecture vido.html'));
+});
+
+app.get(['/cocexam', '/cocexam.html', '/Coc exam.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'Coc exam.html'));
+});
+
+// Direct Logout Redirect
 app.get('/logout', (req, res) => res.redirect('/register.html'));
 
-// AI Chat API
+// 2. AI Chat API
 app.post('/api/chat', async (req, res) => {
     try {
         const { message } = req.body;
@@ -50,15 +62,22 @@ app.post('/api/chat', async (req, res) => {
         return res.json({ reply: text || "ምንም መልስ አልተገኘም።" });
     } catch (error) {
         console.error("Gemini API Error:", error);
-        return res.status(500).json({ error: "API Key Error: " + error.message });
+        return res.status(500).json({ error: "API Error: " + error.message });
     }
 });
 
-// Any file fallback
+// 3. Any file fallback (URL Space እና Case Handling)
 app.get('*', (req, res) => {
-    const filePath = path.join(__dirname, req.path);
+    const decodedPath = decodeURIComponent(req.path);
+    const filePath = path.join(__dirname, decodedPath);
+    
     res.sendFile(filePath, (err) => {
         if (err) {
+            // ጥያቄው የ HTML ገፅ ካልሆነ (ለ CSS/JS/Image ከሆነ) error እንዲመልስ
+            if (req.path.includes('.')) {
+                return res.status(404).send("File not found");
+            }
+            // ለሌሎች የገፅ ጥያቄዎች ወደ dashboard እንዲወስድ
             res.sendFile(path.join(__dirname, 'dashboard.html'));
         }
     });
