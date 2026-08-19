@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Assistant - Educaeet</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        /* App Card Container */
+        .app-card {
+            width: 100%;
+            max-width: 420px;
+            height: 92vh;
+            max-height: 850px;
+            background-color: #f8fafc;
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Header (#01432f) */
+        .app-header {
+            background-color: #01432f;
+            color: #ffffff;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn-round {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .icon-btn-round:active {
+            transform: scale(0.92);
+        }
+
+        .header-title-box h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .header-title-box p {
+            font-size: 12px;
+            color: #a7f3d0;
+            margin-top: 1px;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-247 {
+            background-color: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Suggestions Bar */
+        .suggestions-bar {
+            display: flex;
+            gap: 10px;
+            padding: 16px 18px 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+
+        .suggestions-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip-btn {
+            background-color: #ffffff;
+            border: 1px solid #d1fae5;
+            color: #047857;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            background-color: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
+        /* Chat Body */
+        .chat-body {
+            flex: 1;
+            padding: 10px 18px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .bot-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #f3e8ff;
+            color: #7e22ce;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .bot-bubble-wrapper {
+            max-width: 82%;
+        }
+
+        .bot-bubble {
+            background-color: #ffffff;
+            color: #1e293b;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 6px;
+            margin-left: 2px;
+        }
+
+        .user-row {
+            justify-content: flex-end;
+        }
+
+        .user-bubble {
+            background-color: #01432f;
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-right-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 80%;
+            box-shadow: 0 2px 8px rgba(1, 67, 47, 0.15);
+        }
+
+        /* Typing Dots Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background-color: #a855f7;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Footer Input Area */
+        .app-footer {
+            background-color: #ffffff;
+            padding: 16px 18px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .input-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .text-input {
+            flex: 1;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .text-input:focus {
+            border-color: #01432f;
+            background-color: #ffffff;
+        }
+
+        .send-btn-round {
+            width: 48px;
+            height: 48px;
+            background-color: #01432f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn-round:active {
+            transform: scale(0.92);
+            background-color: #002d1f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-card">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="icon-btn-round" onclick="history.back()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="header-title-box">
+                    <h1>Educaeet AI</h1>
+                    <p>Online • Health Tutor</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn-round" onclick="clearChat()" title="Clear Chat">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+                <div class="badge-247">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 24/7
+                </div>
+            </div>
+        </header>
+
+        <!-- Quick Suggestions -->
+        <div class="suggestions-bar">
+            <button class="chip-btn" onclick="sendSuggestion('Nursing Process')">Nursing Process</button>
+            <button class="chip-btn" onclick="sendSuggestion('Bioavailability')">Bioavailability</button>
+            <button class="chip-btn" onclick="sendSuggestion('EDTA Function')">EDTA Function</button>
+        </div>
+
+        <!-- Chat Container -->
+        <main class="chat-body" id="chatBody">
+            <div class="message-row">
+                <div class="bot-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bot-bubble-wrapper">
+                    <div class="bot-bubble">
+                        Hello! I am your <strong>Educaeet AI Assistant</strong>. Ask me any health science questions, medical concepts, or exam prep queries!
+                    </div>
+                    <div class="timestamp">Just now</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="app-footer">
+            <form class="input-form" id="chatForm">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    class="text-input" 
+                    placeholder="Type your question here..." 
+                    autocomplete="off" 
+                    required 
+                />
+                <button type="submit" class="send-btn-round">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </footer>
+    </div>
+
+    <script>
+        // Insert API Key here
+        // ከዚህ በፊት የነበረው፦
+// const GEMINI_API_KEY = "AQ.Ab8RN6K2oV2IBZF_dDs_QFoLt6t7siGPGeY8Vgdr0yX9u6HcYw";
+
+// አሁን እንዲህ አድርገህ ቀይረው፦
+const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
+
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const chatBody = document.getElementById('chatBody');
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (text) handleUserSend(text);
+        });
+
+        function sendSuggestion(text) {
+            handleUserSend(text);
+        }
+
+        async function handleUserSend(text) {
+            appendUserMessage(text);
+            userInput.value = '';
+            scrollToBottom();
+
+            const loadingId = appendLoading();
+            scrollToBottom();
+
+            try {
+                // Updated model name to gemini-3.6-flash
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        system_instruction: {
+                            parts: [{ text: "You are Educaeet AI Assistant, an expert medical and health science tutor. Provide concise, well-structured, and accurate answers." }]
+                        },
+                        contents: [
+                            { parts: [{ text: text }] }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                removeLoading(loadingId);
+
+                if (response.ok && data.candidates && data.candidates[0].content.parts[0].text) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    appendBotMessage(aiReply);
+                } else {
+                    const errMsg = data.error ? data.error.message : "API Request Error";
+                    appendBotMessage(`Error: ${errMsg}`);
+                }
+            } catch (err) {
+                removeLoading(loadingId);
+                appendBotMessage("Connection failed. Please check your internet connection.");
+            }
+
+            scrollToBottom();
+        }
+
+        function appendUserMessage(text) {
+            const html = `
+                <div class="message-row user-row">
+                    <div class="user-bubble">${escapeHtml(text)}</div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', html);
+        }
+
+        function appendBotMessage(text) {
+            const html = `
+                <div class="message-row">
+                    <div class="bot-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bot-bubble-wrapper">
+                        <div class="bot-bubble">${formatText(text)}</div>
+                        <div class="timestamp">Just now</div>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', html);
+        }
+
+        function appendLoading() {
+            const id = 'loading-' + Date.now();
+            const html = `
+                <div class="message-row" id="${id}">
+                    <div class="bot-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bot-bubble-wrapper">
+                        <div class="bot-bubble">
+                            <div class="typing-indicator">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', html);
+            return id;
+        }
+
+        function removeLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function clearChat() {
+            chatBody.innerHTML = `
+                <div class="message-row">
+                    <div class="bot-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bot-bubble-wrapper">
+                        <div class="bot-bubble">
+                            Chat cleared! Ask me anything about health science, medical concepts, or exam prep queries!
+                        </div>
+                        <div class="timestamp">Just now</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function scrollToBottom() {
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        function formatText(text) {
+            let formatted = escapeHtml(text);
+            return formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>

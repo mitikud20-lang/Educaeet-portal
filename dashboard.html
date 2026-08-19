@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Educaeet Portal</title>
+  
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-green: #064e3b;
+      --primary-green-light: #047857;
+      --accent-gold: #f59e0b;
+      --bg-cream: #fbfbfe;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --card-border: #e2e8f0;
+      --ai-purple: #7c3aed;
+      --ai-purple-light: #f3e8ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      background-color: #f8fafc;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* TOP ANNOUNCEMENT BAR */
+    .top-bar {
+      background: #022c22;
+      color: #a7f3d0;
+      padding: 8px 5%;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar-contacts { display: flex; gap: 20px; }
+    .top-bar-contacts span { display: flex; align-items: center; gap: 6px; }
+
+    /* NAVBAR */
+    .navbar {
+      background: #ffffff;
+      padding: 16px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-brand img { height: 42px; border-radius: 8px; }
+    .nav-brand-text h2 { font-size: 1.25rem; font-weight: 800; color: var(--primary-green); line-height: 1.1; }
+    .nav-brand-text p { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
+
+    .profile-pill-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      padding: 6px 14px 6px 8px;
+      border-radius: 30px;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      transition: all 0.2s ease;
+    }
+    .profile-pill-btn:hover { background: #e2e8f0; }
+
+    .user-avatar-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary-green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .user-name-label { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); }
+
+    .logout-btn-nav {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .logout-btn-nav:hover { background: #dc2626; color: #ffffff; }
+
+    /* HERO BANNER SECTION */
+    .hero-section {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      padding: 60px 5% 80px 5%;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      position: relative;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+
+    .hero-text h1 span { color: var(--accent-gold); }
+
+    .hero-text p {
+      font-size: 1.05rem;
+      color: #a7f3d0;
+      margin-bottom: 28px;
+      line-height: 1.6;
+      max-width: 580px;
+    }
+
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary-gold {
+      background: var(--accent-gold);
+      color: #0f172a;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+      transition: transform 0.2s ease;
+    }
+    .btn-primary-gold:hover { transform: translateY(-2px); }
+
+    .btn-secondary-ai {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-img-box {
+      width: 100%;
+      max-width: 360px;
+      height: 380px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: #a7f3d0;
+      position: relative;
+    }
+
+    /* FLOATING BADGES IN HERO */
+    .floating-badge {
+      position: absolute;
+      background: #ffffff;
+      color: var(--text-dark);
+      padding: 12px 20px;
+      border-radius: 18px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+    .badge-1 { top: 20px; left: -20px; }
+    .badge-2 { bottom: 30px; right: -10px; }
+    .floating-badge i { font-size: 1.4rem; color: var(--primary-green-light); }
+
+    /* STATS STRIP */
+    .stats-section {
+      max-width: 1100px;
+      margin: -40px auto 50px auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+      border: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-item h3 { font-size: 1.8rem; font-weight: 800; color: var(--primary-green); }
+    .stat-item p { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+    /* CATEGORIES & MODULES SECTION */
+    .main-section {
+      max-width: 1200px;
+      margin: 0 auto 60px auto;
+      padding: 0 5%;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header span {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--primary-green-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: #d1fae5;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-top: 10px;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .module-card {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 28px 22px;
+      border: 1px solid var(--card-border);
+      text-decoration: none;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-color: var(--primary-green-light);
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .bg-coc { background: #dbeafe; color: #1d4ed8; }
+    .bg-ppt { background: #fef3c7; color: #d97706; }
+    .bg-video { background: #ffe4e6; color: #e11d48; }
+    .bg-ai { background: var(--ai-purple-light); color: var(--ai-purple); }
+
+    .module-card h3 { font-size: 1.15rem; font-weight: 800; }
+    .module-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+    .card-arrow {
+      margin-top: auto;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-green-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ABOUT SKILLS BANNER */
+    .skills-banner {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 40px;
+      border: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .skills-info h3 { font-size: 1.8rem; font-weight: 800; line-height: 1.3; margin-bottom: 14px; }
+    .skills-info p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+
+    .features-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .features-list li { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-dark); }
+    .features-list i { color: #10b981; }
+
+    /* AI MODAL CHAT BOX */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .ai-modal-box {
+      width: 100%;
+      max-width: 440px;
+      height: 80vh;
+      max-height: 580px;
+      background: #ffffff;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .ai-modal-header {
+      background: var(--ai-purple);
+      color: #ffffff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ai-modal-header h3 { font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+    .chat-messages-area {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+
+    .bubble-user {
+      align-self: flex-end;
+      background: var(--primary-green);
+      color: #ffffff;
+      border-bottom-right-radius: 2px;
+    }
+
+    .bubble-ai {
+      align-self: flex-start;
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1px solid var(--card-border);
+      border-bottom-left-radius: 2px;
+    }
+
+    .chat-input-area {
+      padding: 12px;
+      background: #ffffff;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .chat-input-area button {
+      background: var(--ai-purple);
+      color: #ffffff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* PROFILE MODAL BOX */
+    .profile-card {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 26px;
+      position: relative;
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: #f1f5f9; border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%; cursor: pointer;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--card-border); font-size: 0.88rem; font-weight: 600; outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero-container { grid-template-columns: 1fr; text-align: center; }
+      .hero-text h1 { font-size: 2.1rem; }
+      .hero-btns { justify-content: center; }
+      .hero-image-wrapper { display: none; }
+      .skills-banner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-contacts">
+      <span><i class="fa-solid fa-graduation-cap"></i> Mizan-Aman Health Science College</span>
+    </div>
+    <div><span>Educaeet Digital Learning Portal</span></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-brand">
+      <img src="logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/40'">
+      <div class="nav-brand-text">
+        <h2>Educaeet</h2>
+        <p>Student Portal</p>
+      </div>
+    </a>
+
+    <div class="nav-actions">
+      <!-- USER PROFILE BUTTON -->
+      <div class="profile-pill-btn" id="openProfileModalBtn">
+        <div class="user-avatar-circle" id="navAvatarText">UP</div>
+        <span class="user-name-label" id="navUserName">User Profile</span>
+      </div>
+
+      <!-- LOGOUT BUTTON -->
+      <button class="logout-btn-nav" id="logoutBtn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO BANNER SECTION -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-text">
+        <h1>Discover, Learn, & Grow Smarter with <span>Educaeet.</span></h1>
+        <p>የ Mizan-Aman Health Science College የኦፊሴላዊ የትምህርት ፖርታል፤ የ COC ልምምዶች፣ PPTዎች፣ ቪዲዮዎች እና የ AI ረዳት በአንድ ቦታ።</p>
+        
+        <div class="hero-btns">
+          <a href="#modules" class="btn-primary-gold"><i class="fa-solid fa-rocket"></i> ትምህርቶችን ይጀምሩ</a>
+          <!-- HERO AI BUTTON -->
+<a href="ai-assistant.html" class="btn-secondary-ai">
+  <i class="fa-solid fa-robot"></i> AI ረዳቱን ይጠይቁ
+</a>
+        </div>
+      </div>
+
+      <div class="hero-image-wrapper">
+        <div class="hero-img-box">
+          <i class="fa-solid fa-user-graduate"></i>
+        </div>
+
+        <div class="floating-badge badge-1">
+          <i class="fa-solid fa-circle-check"></i>
+          <div>
+            <span style="font-size: 1.1rem; display:block;">100%</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">COC Exam Readiness</span>
+          </div>
+        </div>
+
+        <div class="floating-badge badge-2">
+          <i class="fa-solid fa-book-open"></i>
+          <div>
+            <span style="font-size: 1.1rem; display:block;">4 Major</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">Health Departments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-section">
+    <div class="stat-item">
+      <h3>1090+</h3>
+      <p>COC Practice Questions</p>
+    </div>
+    <div class="stat-item">
+      <h3>120+</h3>
+      <p>Lecture PPT Presentations</p>
+    </div>
+    <div class="stat-item">
+      <h3>50+</h3>
+      <p>Practical Video Lessons</p>
+    </div>
+    <div class="stat-item">
+      <h3>24/7</h3>
+      <p>AI Academic Assistant</p>
+    </div>
+  </div>
+
+  <!-- MAIN CATEGORIES & MODULES GRID -->
+  <section class="main-section" id="modules">
+    <div class="section-header">
+      <span>Categories</span>
+      <h2>Explore Learning Modules</h2>
+    </div>
+
+    <div class="modules-grid">
+      <!-- 1. COC EXAM PREP -->
+      <a href="Coc exam.html" class="module-card">
+        <div class="card-icon bg-coc"><i class="fa-solid fa-file-pen"></i></div>
+        <h3>COC Exam Prep</h3>
+        <p>Nursing, HIT, Midwifery & Lab Science Practice questions with explanations.</p>
+        <div class="card-arrow">ወደ ፈተናዎች ይለፉ <i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 2. LECTURE PPTS -->
+      <a href="Lectureppt.html" class="module-card">
+        <div class="card-icon bg-ppt"><i class="fa-solid fa-file-powerpoint"></i></div>
+        <h3>Lecture PPTs</h3>
+        <p>Download and review official course lecture presentations.</p>
+        <div class="card-arrow">PPTዎችን ይክፈቱ <i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 3. VIDEO TUTORIALS -->
+      <a href="lecture vido.html" class="module-card">
+        <div class="card-icon bg-video"><i class="fa-solid fa-circle-play"></i></div>
+        <h3>Video Tutorials</h3>
+        <p>Watch recorded practical lessons and core clinical procedures.</p>
+        <div class="card-arrow">ቪዲዮዎችን ይመልከቱ <i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 4. AI ASSISTANT -->
+<a href="ai-assistant.html" class="module-card">
+  <div class="card-icon bg-ai"><i class="fa-solid fa-robot"></i></div>
+  <h3>AI Study Assistant</h3>
+  <p>Get instant explanations for complex medical terms and questions 24/7.</p>
+  <div class="card-arrow" style="color: var(--ai-purple);">
+    AI ረዳቱን ይክፈቱ <i class="fa-solid fa-arrow-right"></i>
+  </div>
+</a>
+
+    <!-- SKILLS BANNER -->
+    <div class="skills-banner">
+      <div class="skills-info">
+        <h3>Learn & Grow Your Medical Skills Anywhere, Anytime.</h3>
+        <p>Educaeet Portal is designed to support health science students with interactive tools, practice modules, and smart AI assistance.</p>
+        
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check-circle"></i> Flexible Online Access</li>
+          <li><i class="fa-solid fa-check-circle"></i> Official College Materials</li>
+          <li><i class="fa-solid fa-check-circle"></i> Instant AI Medical Concept Explanations</li>
+        </ul>
+      </div>
+
+      <div style="background: #f1f5f9; border-radius:20px; padding:30px; text-align:center;">
+        <i class="fa-solid fa-heart-pulse" style="font-size: 4rem; color: var(--primary-green-light); margin-bottom:15px;"></i>
+        <h4 style="font-size:1.1rem; font-weight:800;">Mizan-Aman Health Science College</h4>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">Empowering future healthcare professionals.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. AI ASSISTANT CHAT MODAL -->
+  <div class="modal-overlay" id="aiModal">
+    <div class="ai-modal-box">
+      <div class="ai-modal-header">
+        <h3><i class="fa-solid fa-robot"></i> Educaeet AI Assistant</h3>
+        <button id="closeAiModalBtn" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✖</button>
+      </div>
+
+      <div class="chat-messages-area" id="chatContainer">
+        <div class="chat-bubble bubble-ai">
+          ሰላም! እኔ የ Educaeet AI ረዳት ነኝ። የትምህርት፣ የትምህርት ኮርስ ወይም የ COC ጥያቄ ካለዎት ይጠይቁኝ!
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="aiInputField" placeholder="ጥያቄዎን እዚህ ይጻፉ..." onkeydown="if(event.key==='Enter') sendAiMessage()">
+        <button onclick="sendAiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. USER PROFILE MODAL -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="profile-card">
+      <button class="close-modal-btn" id="closeProfileModalBtn">✖</button>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="user-avatar-circle" id="modalAvatarText" style="width: 56px; height: 56px; font-size: 1.5rem; margin: 0 auto 10px auto;">ተ</div>
+        <h3 style="font-size: 1.1rem; font-weight: 800;">Student Profile</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted);">Mizan-Aman Health Science College</p>
+      </div>
+
+      <form id="profileForm">
+        <div class="form-group">
+          <label>Full Name / ስም</label>
+          <input type="text" id="studentName" required>
+        </div>
+        <div class="form-group">
+          <label>Student ID / መታወቂያ ቁጥር</label>
+          <input type="text" id="studentId" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address / ኢሜይል</label>
+          <input type="email" id="studentEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Department / የትምህርት ዘርፍ</label>
+          <select id="studentDept">
+            <option value="Clinical Nursing">Clinical Nursing</option>
+            <option value="Health Information Tech (HIT)">Health Information Tech (HIT)</option>
+            <option value="Midwifery">Midwifery</option>
+            <option value="Medical Laboratory Technology">Medical Laboratory Technology</option>
+            <option value="Pharmacy">Pharmacy</option>
+          </select>
+        </div>
+
+        <button type="submit" style="width: 100%; background: var(--primary-green); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;">
+          <i class="fa-solid fa-floppy-disk"></i> Save Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // GEMINI API KEY CONFIGURATION
+    // ከዚህ በፊት የነበረው፦
+// const GEMINI_API_KEY = "AQ.Ab8RN6K2oV2IBZF_dDs_QFoLt6t7siGPGeY8Vgdr0yX9u6HcYw";
+
+// አሁን እንዲህ አድርገህ ቀይረው፦
+const GEMINI_API_KEY = window.GEMINI_API_KEY || "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // AUTH CHECK: ተማሪው Login ካላደረገ ወደ register.html ይመልሰዋል
+      const isLoggedIn = localStorage.getItem("educaeet_is_logged_in");
+      if (isLoggedIn !== "true") {
+        window.location.href = "register.html";
+        return;
+      }
+
+      // PROFILE DATA LOAD
+      loadProfileData();
+
+      // MODAL CONTROLS
+      const aiModal = document.getElementById("aiModal");
+      const profileModal = document.getElementById("profileModal");
+
+      document.getElementById("openAiHeroBtn").addEventListener("click", () => aiModal.classList.add("active"));
+      document.getElementById("openAiCardBtn").addEventListener("click", () => aiModal.classList.add("active"));
+      document.getElementById("closeAiModalBtn").addEventListener("click", () => aiModal.classList.remove("active"));
+
+      document.getElementById("openProfileModalBtn").addEventListener("click", () => profileModal.classList.add("active"));
+      document.getElementById("closeProfileModalBtn").addEventListener("click", () => profileModal.classList.remove("active"));
+
+      // PROFILE SAVE
+      document.getElementById("profileForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const updatedProfile = {
+          name: document.getElementById("studentName").value.trim(),
+          id: document.getElementById("studentId").value.trim(),
+          email: document.getElementById("studentEmail").value.trim(),
+          department: document.getElementById("studentDept").value
+        };
+
+        localStorage.setItem("educaeet_user_profile", JSON.stringify(updatedProfile));
+        localStorage.setItem("currentUser", JSON.stringify(updatedProfile)); // sync with register format
+        loadProfileData();
+        profileModal.classList.remove("active");
+        alert("የፕሮፋይል መረጃዎ በትክክል ተቀምጧል!");
+      });
+
+      // LOGOUT ACTION
+      document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+    });
+
+    // LOAD PROFILE DATA FROM LOCALSTORAGE
+    function loadProfileData() {
+      // register.html ወይም educaeet_user_profile መረጃን መፈለግ
+      const savedUser = localStorage.getItem("educaeet_user_profile") || localStorage.getItem("currentUser");
+      
+      const profileData = savedUser ? JSON.parse(savedUser) : {
+        name: "ተማሪ",
+        id: "MAHSC/2026/01",
+        email: "student@educaeet.com",
+        department: "Clinical Nursing"
+      };
+
+      document.getElementById("studentName").value = profileData.name || "";
+      document.getElementById("studentId").value = profileData.id || "MAHSC/2026/01";
+      document.getElementById("studentEmail").value = profileData.email || "";
+      if (profileData.department) {
+        document.getElementById("studentDept").value = profileData.department;
+      }
+
+      document.getElementById("navUserName").textContent = profileData.name || "User Profile";
+      const initial = profileData.name ? profileData.name.charAt(0).toUpperCase() : "ተ";
+      document.getElementById("navAvatarText").textContent = initial;
+      document.getElementById("modalAvatarText").textContent = initial;
+    }
+
+    // LOGOUT FUNCTION
+    function handleLogout() {
+      if (confirm("ከሲስተሙ መውጣት (Logout ማድረግ) ይፈልጋሉ?")) {
+        localStorage.removeItem("educaeet_is_logged_in");
+        localStorage.removeItem("currentUser");
+        window.location.href = "register.html";
+      }
+    }
+
+    // EDUCAEET AI ASSISTANT (STABLE GEMINI API)
+    async function sendAiMessage() {
+      const inputField = document.getElementById("aiInputField");
+      const chatContainer = document.getElementById("chatContainer");
+
+      if (!inputField || !chatContainer) return;
+
+      const userMessage = inputField.value.trim();
+      if (!userMessage) return;
+
+      // 1. የተማሪውን ጥያቄ በስክሪን ላይ በቀኝ በኩል ማሳየት
+      appendBubble("user", userMessage);
+      inputField.value = "";
+
+      // 2. ጊዜያዊ የ AI መልእክት በግራ በኩል ማሳየት
+      const loadingId = appendBubble("ai", "Thinking... ⏳");
+
+      const systemPrompt = "You are the Official Academic & Medical AI Assistant for Educaeet Portal at Mizan-Aman Health Science College. Answer student questions comprehensively, clearly, and strictly in English.";
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: `${systemPrompt}\n\nStudent Question: ${userMessage}` }]
+              }
+            ]
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.candidates && data.candidates[0] && data.candidates[0].content.parts[0].text) {
+          const aiReply = data.candidates[0].content.parts[0].text;
+          updateBubble(loadingId, aiReply);
+        } else {
+          console.error("Gemini Error:", data);
+          updateBubble(loadingId, "Please paste a valid Gemini API key.");
+        }
+
+      } catch (error) {
+        console.error("Fetch Error:", error);
+        updateBubble(loadingId, "Network error! Please check your internet connection.");
+      }
+    }
+
+    function appendBubble(sender, text) {
+      const container = document.getElementById("chatContainer");
+      if (!container) return null;
+
+      const bubble = document.createElement("div");
+      const bubbleId = "msg-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+
+      bubble.id = bubbleId;
+      bubble.className = sender === "user" ? "chat-bubble bubble-user" : "chat-bubble bubble-ai";
+      bubble.innerText = text;
+
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+      return bubbleId;
+    }
+
+    function updateBubble(id, text) {
+      const bubble = document.getElementById(id);
+      if (bubble) bubble.innerText = text;
+    }
+  </script>  
+</body>
+</html>

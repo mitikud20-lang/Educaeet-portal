@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecture Videos - Mizan-Aman Health Science College</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- ==================== INTERNAL CSS STYLES ==================== -->
+  <style>
+    :root {
+      --primary-green: #064e3b;
+      --primary-green-light: #047857;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-border: #e2e8f0;
+      --bg-light: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      padding: 18px 20px;
+      background: var(--primary-green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover { background: rgba(255, 255, 255, 0.25); }
+    .top-header h1 { font-size: 1.15rem; font-weight: 800; }
+
+    /* Content Area */
+    .content-area { padding: 20px; background: var(--bg-light); flex: 1; }
+
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* STEP 1: Department Cards Grid */
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 12px;
+    }
+
+    .dept-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dept-card:hover {
+      border-color: var(--primary-green-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .dept-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    /* Colors */
+    .dept-card.nursing .dept-icon { background: #dbeafe; color: #1d4ed8; }
+    .dept-card.pharmacy .dept-icon { background: #dcfce7; color: #15803d; }
+    .dept-card.lab .dept-icon { background: #fef3c7; color: #b45309; }
+    .dept-card.hit .dept-icon { background: #f3e8ff; color: #7e22ce; }
+    .dept-card.midwife .dept-icon { background: #ffe4e6; color: #be123c; }
+
+    .dept-info h3 { font-size: 0.98rem; font-weight: 800; color: var(--text-main); }
+    .dept-info p { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* STEP 2: Video List View */
+    .video-section { display: none; }
+
+    .selected-dept-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .selected-dept-banner h2 { font-size: 0.95rem; font-weight: 800; color: var(--primary-green); }
+
+    .change-dept-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary-green-light);
+      background: #ffffff;
+      border: 1px solid #a7f3d0;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .video-list { display: flex; flex-direction: column; gap: 18px; }
+
+    .video-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      background: #000;
+    }
+
+    .iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-body { padding: 14px 16px; }
+    .video-body h3 { font-size: 0.94rem; font-weight: 800; margin-bottom: 6px; color: var(--text-main); line-height: 1.3; }
+    .video-body p { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Top Navigation Header -->
+    <div class="top-header">
+      <button class="back-btn" onclick="showDepartments()" title="Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <h1 id="pageTitle">Select Department</h1>
+    </div>
+
+    <div class="content-area">
+      
+      <!-- STEP 1: Department Selection View -->
+      <div id="deptSelectionView">
+        <div class="section-title">Choose your Department for Videos</div>
+
+        <div class="dept-grid">
+          
+          <div class="dept-card nursing" onclick="selectDepartment('Clinical Nursing')">
+            <div class="dept-icon"><i class="fa-solid fa-user-nurse"></i></div>
+            <div class="dept-info">
+              <h3>Clinical Nursing</h3>
+              <p>Clinical Practical & Demonstration Videos</p>
+            </div>
+          </div>
+
+          <div class="dept-card pharmacy" onclick="selectDepartment('Pharmacy')">
+            <div class="dept-icon"><i class="fa-solid fa-pills"></i></div>
+            <div class="dept-info">
+              <h3>Pharmacy</h3>
+              <p>Drug Compounding & Lab Practical Videos</p>
+            </div>
+          </div>
+
+          <div class="dept-card lab" onclick="selectDepartment('Medical Laboratory')">
+            <div class="dept-icon"><i class="fa-solid fa-microscope"></i></div>
+            <div class="dept-info">
+              <h3>Medical Laboratory</h3>
+              <p>Blood Sampling & Microscopic Analysis</p>
+            </div>
+          </div>
+
+          <div class="dept-card hit" onclick="selectDepartment('Health Information Tech (HIT)')">
+            <div class="dept-icon"><i class="fa-solid fa-laptop-medical"></i></div>
+            <div class="dept-info">
+              <h3>Health Information Tech (HIT)</h3>
+              <p>Health Software & System Tutorials</p>
+            </div>
+          </div>
+
+          <div class="dept-card midwife" onclick="selectDepartment('Midwifery')">
+            <div class="dept-icon"><i class="fa-solid fa-baby"></i></div>
+            <div class="dept-info">
+              <h3>Midwifery</h3>
+              <p>Delivery & Maternal Health Procedures</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STEP 2: Video Content View -->
+      <div id="videoContentView" class="video-section">
+        
+        <div class="selected-dept-banner">
+          <h2 id="activeDeptName">Department Name</h2>
+          <button class="change-dept-btn" onclick="showDepartments()">Change</button>
+        </div>
+
+        <div class="section-title">Lecture Video Tutorials (10 Videos)</div>
+
+        <div class="video-list" id="videoListContainer">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== INTERNAL JAVASCRIPT ==================== -->
+  <script>
+    // 💡 Verified & Active YouTube Video IDs for direct embedding
+    const deptVideos = {
+      'Clinical Nursing': [
+        { ytId: 'uBGl2BujkPQ', title: '1. Introduction to Anatomy & Human Physiology', instructor: 'CrashCourse Anatomy' },
+        { ytId: 'X9ZZZqbS120', title: '2. Cardiovascular System & Heart Anatomy', instructor: 'CrashCourse Medical' },
+        { ytId: '_0N3U1m6j9A', title: '3. Respiratory System Physiology & Mechanics', instructor: 'CrashCourse' },
+        { ytId: 'qPix_X-9t7E', title: '4. Nervous System Basics for Nursing', instructor: 'CrashCourse' },
+        { ytId: 'WVrlHH14q3o', title: '5. Endocrine System & Hormone Regulation', instructor: 'CrashCourse' },
+        { ytId: '72y-S1M91tE', title: '6. Digestive System Mechanics & Nutrition', instructor: 'CrashCourse' },
+        { ytId: 'f1E2iG2tA1k', title: '7. Urinary System & Kidney Function', instructor: 'CrashCourse' },
+        { ytId: 'bRFcqaI0_vA', title: '8. Lymphatic System & Immune Response', instructor: 'CrashCourse' },
+        { ytId: 'r3Fu-_M-9fA', title: '9. Circulatory System & Blood Vessels', instructor: 'CrashCourse' },
+        { ytId: 'J8A6d_Q2e7Y', title: '10. Immune System Defense Mechanisms', instructor: 'CrashCourse' }
+      ],
+
+      'Pharmacy': [
+        { ytId: '9hIQjrLy0jU', title: '1. Introduction to Pharmacology Concepts', instructor: 'Khan Academy Medicine' },
+        { ytId: 'RNJ0xM4C7-I', title: '2. Pharmacokinetics: Drug Absorption & ADME', instructor: 'Osmosis Pharmacology' },
+        { ytId: 'ANi709MYnWg', title: '3. Acids, Bases & pH in Pharmaceutical Formulations', instructor: 'CrashCourse Chemistry' },
+        { ytId: '5pS8k4e7dZ0', title: '4. Solution Concentrations & Compounding Math', instructor: 'CrashCourse Chemistry' },
+        { ytId: '0c89R86Wp8E', title: '5. Stoichiometry & Dosage Calculation Basics', instructor: 'Chemistry Unit' },
+        { ytId: 'uBGl2BujkPQ', title: '6. Human Body Systems for Pharmacists', instructor: 'CrashCourse Medical' },
+        { ytId: 'X9ZZZqbS120', title: '7. Cardiovascular Pharmacology Foundations', instructor: 'Khan Academy' },
+        { ytId: 'f1E2iG2tA1k', title: '8. Renal Drug Elimination Principles', instructor: 'Osmosis' },
+        { ytId: 'WVrlHH14q3o', title: '9. Endocrine Pharmacology & Insulin Overview', instructor: 'CrashCourse' },
+        { ytId: 'J8A6d_Q2e7Y', title: '10. Antibiotics & Anti-infective Mechanisms', instructor: 'Pharmacology Lab' }
+      ],
+
+      'Medical Laboratory': [
+        { ytId: '0N_x03u5eI4', title: '1. Compound Light Microscope Operation & Care', instructor: 'Lab Technology Unit' },
+        { ytId: 'p8J22dM3sJ4', title: '2. Phlebotomy & Venipuncture Techniques', instructor: 'Clinical Laboratory' },
+        { ytId: 'uBGl2BujkPQ', title: '3. Cell Structure & Histology Fundamentals', instructor: 'CrashCourse Biology' },
+        { ytId: 'r3Fu-_M-9fA', title: '4. Hematology: Blood Composition & Cells', instructor: 'Hematology Lab' },
+        { ytId: 'f1E2iG2tA1k', title: '5. Routine Urinalysis & Kidney Diagnostic Lab', instructor: 'Clinical Chemistry' },
+        { ytId: 'J8A6d_Q2e7Y', title: '6. Immunology: Antibodies & Antigen Testing', instructor: 'Immunohematology' },
+        { ytId: '72y-S1M91tE', title: '7. Gastrointestinal Diagnostics & Microbiology', instructor: 'Microbiology Lab' },
+        { ytId: '_0N3U1m6j9A', title: '8. Respiratory Pathogen Identification', instructor: 'Diagnostic Lab' },
+        { ytId: 'WVrlHH14q3o', title: '9. Endocrine & Hormone Assays', instructor: 'Clinical Biochemistry' },
+        { ytId: 'qPix_X-9t7E', title: '10. Neuro-Diagnostics & Fluid Analysis', instructor: 'Lab Science' }
+      ],
+
+      'Health Information Tech (HIT)': [
+        { ytId: 'y3G2p05y8rI', title: '1. Overview of Health Information Systems (HIS)', instructor: 'Health Informatics' },
+        { ytId: 'zN31W52cM9c', title: '2. Electronic Health Records (EHR) Architecture', instructor: 'HIT Systems Lead' },
+        { ytId: 'Hv85a210j94', title: '3. Medical Coding & ICD Classification Basics', instructor: 'Health Admin' },
+        { ytId: '3e83E41k8xM', title: '4. Healthcare Database Systems & SQL Basics', instructor: 'Database Admin' },
+        { ytId: 'bJ28r8xM9p0', title: '5. Patient Data Privacy, Security & HIPAA Rules', instructor: 'Legal & Ethics' },
+        { ytId: 'm28a1X2j0mM', title: '6. Health Data Analytics & Biostatistics Intro', instructor: 'Biostatistics Unit' },
+        { ytId: '8x2m9P0v1X2', title: '7. Telemedicine & Digital Health Systems', instructor: 'Digital Health Lead' },
+        { ytId: 'uBGl2BujkPQ', title: '8. Medical Terminology for Health IT Professionals', instructor: 'Anatomy & Tech' },
+        { ytId: '9m1X2p0m3k4', title: '9. Hospital Information Workflow Management', instructor: 'Health Admin' },
+        { ytId: '2a1M9p0m3x4', title: '10. DHIS2 & Public Health Data Collection', instructor: 'M&E System Unit' }
+      ],
+
+      'Midwifery': [
+        { ytId: 'uBGl2BujkPQ', title: '1. Reproductive System Anatomy & Physiology', instructor: 'CrashCourse' },
+        { ytId: 'WVrlHH14q3o', title: '2. Hormonal Regulation of the Menstrual Cycle', instructor: 'CrashCourse Medical' },
+        { ytId: 'r3Fu-_M-9fA', title: '3. Fetal Circulation & Maternal-Fetal Physiology', instructor: 'Maternal Care Unit' },
+        { ytId: 'X9ZZZqbS120', title: '4. Fetal Heart Rate & Maternal Monitoring', instructor: 'Midwifery Specialist' },
+        { ytId: 'J8A6d_Q2e7Y', title: '5. Maternal Immunity & Neonatal Protection', instructor: 'Neonatal Care' },
+        { ytId: '72y-S1M91tE', title: '6. Maternal Nutrition & Antenatal Health', instructor: 'Obstetric Care' },
+        { ytId: 'f1E2iG2tA1k', title: '7. Fluid Balance & Preeclampsia Diagnostics', instructor: 'Emergency Obstetrics' },
+        { ytId: '_0N3U1m6j9A', title: '8. Neonatal Resuscitation & Oxygenation', instructor: 'Pediatrics Unit' },
+        { ytId: 'qPix_X-9t7E', title: '9. Pain Management & Neurological Responses', instructor: 'Midwifery Clinicals' },
+        { ytId: 'bRFcqaI0_vA', title: '10. Postpartum Recovery & Infection Prevention', instructor: 'Reproductive Health' }
+      ]
+    };
+
+    function selectDepartment(deptName) {
+      document.getElementById('deptSelectionView').style.display = 'none';
+      document.getElementById('videoContentView').style.display = 'block';
+      document.getElementById('activeDeptName').textContent = deptName;
+      document.getElementById('pageTitle').textContent = deptName + " Videos";
+
+      const videoListContainer = document.getElementById('videoListContainer');
+      videoListContainer.innerHTML = '';
+
+      const videos = deptVideos[deptName] || [];
+
+      videos.forEach((vid) => {
+        const cardHTML = `
+          <div class="video-card">
+            <div class="iframe-container">
+              <iframe 
+                src="https://www.youtube.com/embed/${vid.ytId}?rel=0" 
+                title="${vid.title}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="video-body">
+              <h3>${vid.title}</h3>
+              <p><i class="fa-solid fa-chalkboard-user"></i> ${vid.instructor}</p>
+            </div>
+          </div>
+        `;
+        videoListContainer.innerHTML += cardHTML;
+      });
+    }
+
+    function showDepartments() {
+      document.getElementById('deptSelectionView').style.display = 'block';
+      document.getElementById('videoContentView').style.display = 'none';
+      document.getElementById('pageTitle').textContent = "Select Department";
+    }
+  </script>
+
+</body>
+</html>

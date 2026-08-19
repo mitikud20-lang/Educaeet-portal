@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COC Exam Prep - Mizan-Aman College</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-green: #064e3b;
+      --primary-green-light: #047857;
+      --success-green: #10b981;
+      --error-red: #ef4444;
+      --ai-purple: #6d28d9;
+      --ai-purple-light: #f3e8ff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-border: #e2e8f0;
+      --bg-light: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-header {
+      padding: 18px 20px;
+      background: var(--primary-green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+    }
+
+    .top-header h1 { font-size: 1.15rem; font-weight: 800; }
+    .content-area { padding: 20px; background: var(--bg-light); flex: 1; }
+
+    .dept-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 12px; }
+
+    .dept-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dept-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+    .dept-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .dept-card.nursing .dept-icon { background: #dbeafe; color: #1d4ed8; }
+    .dept-card.pharmacy .dept-icon { background: #dcfce7; color: #15803d; }
+    .dept-card.lab .dept-icon { background: #fef3c7; color: #b45309; }
+    .dept-card.hit .dept-icon { background: #f3e8ff; color: #7e22ce; }
+    .dept-card.midwife .dept-icon { background: #ffe4e6; color: #be123c; }
+
+    .quiz-section { display: none; }
+
+    .selected-dept-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .selected-dept-banner h2 { font-size: 0.95rem; color: var(--primary-green); font-weight: 800; }
+    .selected-dept-banner button {
+      background: #ffffff;
+      border: 1px solid #a7f3d0;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary-green);
+      cursor: pointer;
+    }
+
+    .quiz-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    #qCounter { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+
+    .options-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+
+    .option-btn {
+      background: #f8fafc;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn.correct-ans { border-color: var(--success-green); background: #ecfdf5; color: var(--success-green); }
+    .option-btn.wrong-ans { border-color: var(--error-red); background: #fef2f2; color: var(--error-red); }
+
+    .ai-feedback-box {
+      display: none;
+      background: var(--ai-purple-light);
+      border: 1px solid #d8b4fe;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .action-btn {
+      width: 100%;
+      background: var(--primary-green);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .result-box { display: none; text-align: center; padding: 24px 16px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-header">
+      <button class="back-btn" onclick="showDepartments()"><i class="fa-solid fa-arrow-left"></i></button>
+      <h1 id="pageTitle">Select Department</h1>
+    </div>
+
+    <div class="content-area">
+      <!-- DEPARTMENT SELECTION -->
+      <div id="deptSelectionView">
+        <div class="dept-grid">
+          <div class="dept-card nursing" onclick="startExam('Clinical Nursing')">
+            <div class="dept-icon"><i class="fa-solid fa-user-nurse"></i></div>
+            <div><h3>Clinical Nursing</h3><p>Nursing Care & Health Assessment</p></div>
+          </div>
+          <div class="dept-card pharmacy" onclick="startExam('Pharmacy')">
+            <div class="dept-icon"><i class="fa-solid fa-pills"></i></div>
+            <div><h3>Pharmacy</h3><p>Pharmacology, Calculations & Practice</p></div>
+          </div>
+          <div class="dept-card lab" onclick="startExam('Medical Laboratory')">
+            <div class="dept-icon"><i class="fa-solid fa-microscope"></i></div>
+            <div><h3>Medical Laboratory</h3><p>Hematology & Clinical Chemistry</p></div>
+          </div>
+          <div class="dept-card hit" onclick="startExam('Health Information Tech (HIT)')">
+            <div class="dept-icon"><i class="fa-solid fa-laptop-medical"></i></div>
+            <div><h3>Health Information Tech (HIT)</h3><p>Health Data & Systems Management</p></div>
+          </div>
+          <div class="dept-card midwife" onclick="startExam('Midwifery')">
+            <div class="dept-icon"><i class="fa-solid fa-baby"></i></div>
+            <div><h3>Midwifery</h3><p>Maternal & Neonatal Care</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ VIEW -->
+      <div id="quizContentView" class="quiz-section">
+        <div class="selected-dept-banner">
+          <h2 id="activeDeptName">Department Name</h2>
+          <button onclick="showDepartments()">Change</button>
+        </div>
+
+        <div class="quiz-card" id="questionCard">
+          <div id="qCounter">Question 1</div>
+          <div id="qText" style="font-weight:700; margin:10px 0; line-height: 1.4;">Loading...</div>
+
+          <div class="options-list" id="optionsContainer"></div>
+
+          <div class="ai-feedback-box" id="aiFeedbackBox">
+            <div style="font-weight:800; color:var(--ai-purple); margin-bottom: 4px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Explanation
+            </div>
+            <div id="aiExplanationText" style="font-size:0.85rem; line-height: 1.4;"></div>
+          </div>
+
+          <button class="action-btn" id="mainActionBtn" onclick="handleAction()">Check Answer</button>
+        </div>
+
+        <!-- RESULT BOX -->
+        <div class="quiz-card result-box" id="resultBox">
+          <i class="fa-solid fa-award" style="font-size: 3rem; color: var(--primary-green); margin-bottom: 12px;"></i>
+          <h3>Exam Completed!</h3>
+          <p id="scoreText" style="margin: 10px 0 20px 0; color: var(--text-muted);">You scored 0 out of 0</p>
+          <button class="action-btn" onclick="showDepartments()">Try Another Exam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const deptQuestions = {
+      'Clinical Nursing': [
+        { 
+          q: 'Which component of the nursing process is the design of nursing strategies to resolve patient problems?', 
+          options: ['Assessment', 'Nursing diagnosis', 'Planning', 'Evaluation'], 
+          correct: 2, 
+          explanation: 'Planning involves formulating goal-directed nursing interventions and strategies based on established diagnoses.' 
+        },
+        { 
+          q: 'An example of a complete actual nursing diagnosis is:', 
+          options: [
+            'Peripheral neurovascular dysfunction related to decreased sensation, evidenced by the statement "My feet are tingling"', 
+            'Peripheral neurovascular dysfunction exhibited by patient complaint', 
+            'Peripheral neurovascular dysfunction', 
+            'Peripheral neurovascular dysfunction exhibited by patient statement'
+          ], 
+          correct: 0, 
+          explanation: 'A complete actual diagnosis follows the PES format: Problem (NANDA diagnostic label) + Etiology (related to) + Signs/Symptoms (as evidenced by).' 
+        },
+        { 
+          q: 'Which one is correctly ordered regarding abdominal physical examination sequence?', 
+          options: [
+            'Inspection, Palpation, Percussion, Auscultation', 
+            'Inspection, Percussion, Palpation, Auscultation', 
+            'Inspection, Auscultation, Percussion, Palpation', 
+            'Auscultation, Inspection, Palpation, Percussion'
+          ], 
+          correct: 2, 
+          explanation: 'Auscultation is performed immediately after inspection in abdominal assessment to prevent altering natural bowel sounds during palpation or percussion.' 
+        },
+        { 
+          q: 'The nurse prepares an IM injection that is irritating to subcutaneous tissue. Which is the best technique to prevent tracking of the medication?', 
+          options: ['Apply ice on the injection site', 'Use small gauge needle', 'Administer at 45 degree angle', 'Use the Z-track technique'], 
+          correct: 3, 
+          explanation: 'The Z-track technique seals medication within muscle tissue and prevents leakage into subcutaneous layers.' 
+        },
+        { 
+          q: 'If a patient receiving a blood transfusion develops flushing, chills, and urticaria, what is the nurse\'s immediate action?', 
+          options: [
+            'Tell the blood bank to substitute another unit', 
+            'Slow the flow rate until symptoms improve', 
+            'Stop the transfusion and notify the physician', 
+            'Reassure the patient that symptoms are mild'
+          ], 
+          correct: 2, 
+          explanation: 'At the first sign of a transfusion reaction, the primary safety action is to immediately stop the infusion to prevent further exposure.' 
+        },
+        { 
+          q: 'Which of the following parts of the myometrium is responsible for controlling bleeding in the 3rd stage of labor?', 
+          options: ['Up and down fiber', 'Outer longitudinal fiber', 'Middle oblique fiber', 'Inner circular fiber'], 
+          correct: 2, 
+          explanation: 'Middle oblique myometrial fibers act as "living ligatures" that constrict uterine blood vessels upon contraction.' 
+        },
+        { 
+          q: 'What is the body mass index (BMI) of a patient whose weight and height are 65 kg and 160 cm respectively?', 
+          options: ['43.39', '25.39', '31.39', '29.39'], 
+          correct: 1, 
+          explanation: 'BMI = Weight (kg) / Height (m)² = 65 / (1.6 * 1.6) = 65 / 2.56 = 25.39 kg/m².' 
+        },
+        { 
+          q: 'The most common cause of respiratory distress in preterm infants due to surfactant deficiency is:', 
+          options: ['Meconium aspiration syndrome', 'Neonatal sepsis', 'Congenital pneumonia', 'Hyaline membrane disease'], 
+          correct: 3, 
+          explanation: 'Hyaline Membrane Disease (Respiratory Distress Syndrome) results directly from surfactant deficiency in premature neonates.' 
+        },
+        { 
+          q: 'When does Rh incompatibility occur in pregnancy?', 
+          options: [
+            'An Rh-positive mother carries an Rh-positive fetus', 
+            'An Rh-negative mother carries an Rh-negative fetus', 
+            'An Rh-negative mother carries an Rh-positive fetus', 
+            'An Rh-positive mother carries an Rh-negative fetus'
+          ], 
+          correct: 2, 
+          explanation: 'Rh incompatibility occurs when an Rh-negative mother is exposed to Rh-positive fetal blood, leading to maternal antibody production.' 
+        },
+        { 
+          q: 'Which operating room personnel is constantly alert to intra-operative dangers and manages unsterile area needs?', 
+          options: ['Scrub nurse', 'Surgeon', 'Circulating/Runner nurse', 'Assistant to surgeon'], 
+          correct: 2, 
+          explanation: 'The circulating (runner) nurse manages the overall unsterile environment, supplies sterile fields, and monitors patient safety.' 
+        },
+        { 
+          q: 'When the nurse asks a client to read a Snellen chart, which cranial nerve is being tested?', 
+          options: ['Oculomotor (CN III)', 'Trochlear (CN IV)', 'Olfactory (CN I)', 'Optic (CN II)'], 
+          correct: 3, 
+          explanation: 'The Optic nerve (CN II) is responsible for visual acuity and central/peripheral vision.' 
+        },
+        { 
+          q: 'The rate and amount of drug that is absorbed from a dosage form and reaches systemic circulation is:', 
+          options: ['Bioavailability', 'Distribution', 'Elimination', 'Absorption'], 
+          correct: 0, 
+          explanation: 'Bioavailability measures the fraction of an administered drug dose that reaches unchanged systemic circulation.' 
+        },
+        { 
+          q: 'An immediate nursing concern for a patient who has suffered a femoral shaft fracture is assessment for:', 
+          options: ['Hypovolemic shock', 'Knee and hip dislocation', 'Infection', 'Compartment syndrome'], 
+          correct: 0, 
+          explanation: 'Femur fractures can lead to massive internal hemorrhage (1-1.5 liters of blood loss), making hypovolemic shock a top priority.' 
+        },
+        { 
+          q: 'Which medication is used as a diagnostic agent during radiological imaging?', 
+          options: ['Amoxicillin', 'Pethidine', 'Insulin', 'Barium sulphate'], 
+          correct: 3, 
+          explanation: 'Barium sulphate is a radiopaque contrast agent used in gastrointestinal diagnostic X-ray examinations.' 
+        },
+        { 
+          q: 'What is the level of resistance against a specific communicable disease in a community as a whole?', 
+          options: ['Active immunity', 'Herd immunity', 'Passive immunity', 'Natural immunity'], 
+          correct: 1, 
+          explanation: 'Herd immunity occurs when a significant portion of a population is immune, offering indirect protection to susceptible individuals.' 
+        }
+      ],
+
+      'Pharmacy': [
+        { 
+          q: 'Which of the following is a good quality of a team leader?', 
+          options: ['Punishment', 'Lay off', 'Coaching', 'All'], 
+          correct: 2, 
+          explanation: 'Coaching supports skill development, empowers team members, and improves workplace outcomes positive leadership.' 
+        },
+        { 
+          q: 'A druggist is "just too busy" in a high volume drug store. What type of communication barrier is this?', 
+          options: ['Environmental barrier', 'Workplace barrier', 'Time barrier', 'Personal barrier'], 
+          correct: 2, 
+          explanation: 'Time pressure and workload constraints create a Time barrier that limits effective pharmacist-patient communication.' 
+        },
+        { 
+          q: 'Which dosage form is prepared using hard or soft gelatin shells?', 
+          options: ['Tablet', 'Suppository', 'Capsule', 'All of the above'], 
+          correct: 2, 
+          explanation: 'Capsules are solid dosage forms in which drug substances are enclosed within hard or soft gelatin shells.' 
+        },
+        { 
+          q: 'How many milliliters of a 1:400 (w/v) stock solution should be used to make 4 liters of a 1:2000 (w/v) solution?', 
+          options: ['800 mL', '400 mL', '200 mL', '1000 mL'], 
+          correct: 0, 
+          explanation: 'Using C1V1 = C2V2: (1/400) * V1 = (1/2000) * 4000 mL. V1 = (4000 / 2000) * 400 = 800 mL.' 
+        },
+        { 
+          q: 'A business breaks even at the level of output where:', 
+          options: ['Fixed cost = Total revenue', 'Total profit = Total cost', 'Variable cost = Fixed cost', 'Total revenue = Total cost'], 
+          correct: 3, 
+          explanation: 'The break-even point is reached when total revenue equals total cost (resulting in zero net profit or loss).' 
+        },
+        { 
+          q: 'Which entity is NOT directly responsible for ensuring the quality standards of pharmaceuticals?', 
+          options: ['Drug distributor', 'Drug manufacturer', 'Drug importer', 'Broker'], 
+          correct: 3, 
+          explanation: 'Brokers act as financial/commercial intermediaries without direct handling or regulatory responsibility for quality control.' 
+        },
+        { 
+          q: 'The preparation, mixing, assembling, packaging, and labeling of a drug is referred to as:', 
+          options: ['Dispensing', 'Compounding', 'Sorting', 'Selecting'], 
+          correct: 1, 
+          explanation: 'Compounding is the professional preparation and mixing of customized medication according to a prescription standard.' 
+        },
+        { 
+          q: 'What immediate measure should be taken if a patient is bleeding heavily from a leg wound?', 
+          options: ['Elevate 5 degrees', 'Apply pressure at pressure point', 'Apply direct pressure with clean or sterile dressing', 'Add bulky dressing only'], 
+          correct: 2, 
+          explanation: 'Applying direct pressure with a clean/sterile dressing is the primary immediate measure to control arterial and venous bleeding.' 
+        },
+        { 
+          q: 'Which of the following is a solid medicated preparation?', 
+          options: ['Tablet', 'Suppository', 'Capsule', 'All of the above'], 
+          correct: 3, 
+          explanation: 'Tablets, suppositories, and capsules are all classified as solid pharmaceutical dosage forms.' 
+        },
+        { 
+          q: 'The date after which a compounded pharmaceutical preparation is not to be used is called:', 
+          options: ['Expiry date', 'Preparation date', 'Beyond-use date (BUD)', 'Dispensing date'], 
+          correct: 2, 
+          explanation: 'Beyond-use date (BUD) applies to compounded non-sterile and sterile preparations, unlike manufacturer expiry dates.' 
+        },
+        { 
+          q: 'Which of the following vitamins is water-soluble?', 
+          options: ['Vitamin A', 'Vitamin C', 'Vitamin D', 'All of the above'], 
+          correct: 1, 
+          explanation: 'Vitamin C (Ascorbic acid) and B-complex vitamins are water-soluble, whereas Vitamins A, D, E, and K are fat-soluble.' 
+        },
+        { 
+          q: 'The process of sampling, specification, testing, and release procedures to ensure product quality is:', 
+          options: ['Quality assurance', 'Good manufacturing practice', 'Quality control', 'None of the above'], 
+          correct: 2, 
+          explanation: 'Quality Control (QC) specifically involves product sampling, testing against specifications, and technical release decisions.' 
+        },
+        { 
+          q: 'How many grams of sulfur are present in 80 grams of 3% sulfur ointment?', 
+          options: ['1.8 g', '1.2 g', '2.4 g', 'None'], 
+          correct: 2, 
+          explanation: 'Weight of active ingredient = 80 g * (3 / 100) = 2.4 grams.' 
+        },
+        { 
+          q: 'If 2 mL contains 48 drops, how many drops are contained in 0.08 mL?', 
+          options: ['1 drop', '2 drops', '3 drops', '4 drops'], 
+          correct: 1, 
+          explanation: 'Drop rate = 48 drops / 2 mL = 24 drops/mL. For 0.08 mL: 0.08 * 24 = 1.92 drops ≈ 2 drops.' 
+        },
+        { 
+          q: 'Which of the following is an internal or personal barrier to effective communication?', 
+          options: ['Cell phone ring', 'Loss of confidence', 'Noise of television', 'All of the above'], 
+          correct: 1, 
+          explanation: 'Loss of confidence or psychological anxiety is an internal personal barrier, whereas phone rings and TV noise are environmental.' 
+        },
+        { 
+          q: 'What does the prescription abbreviation "gtt" stand for?', 
+          options: ['Teaspoonful', 'Drop', 'Before meals', 'After meals'], 
+          correct: 1, 
+          explanation: 'The Latin term "guttae" (abbreviated as gtt) stands for drops.' 
+        },
+        { 
+          q: 'What do the Latin prescription abbreviations "AC" and "PC" mean respectively?', 
+          options: ['After meal & Before meal', 'Before meal & After meal', 'At bedtime & Morning', 'With food & On empty stomach'], 
+          correct: 1, 
+          explanation: 'AC (ante cibum) means "before meals" and PC (post cibum) means "after meals".' 
+        },
+        { 
+          q: 'What standard liquid volume measurement corresponds to 1 Teaspoonful (tsp) and 1 Tablespoonful (tbsp)?', 
+          options: ['5 mL & 15 mL', '10 mL & 20 mL', '2.5 mL & 10 mL', '15 mL & 30 mL'], 
+          correct: 0, 
+          explanation: 'In pharmaceutical dosing, 1 Teaspoonful equals 5 mL and 1 Tablespoonful equals 15 mL.' 
+        },
+        { 
+          q: 'In Lean Management (KAIZEN), non-value adding or wasteful activity is referred to as:', 
+          options: ['MURA', 'MURI', 'MUDA', 'KAIZEN'], 
+          correct: 2, 
+          explanation: 'MUDA is the Japanese term for waste or any activity that consumes resources without adding value.' 
+        },
+        { 
+          q: 'Which type of cream base uses synthetic waxes (e.g. macrogol) and provides rapid drug absorption?', 
+          options: ['Water-in-oil (W/O)', 'Oil-in-water (O/W)', 'Hydrocarbon base', 'Absorption base'], 
+          correct: 1, 
+          explanation: 'Oil-in-water (O/W) aqueous cream bases use synthetic waxes and allow rapid skin absorption and water washability.' 
+        }
+      ],
+
+      'Medical Laboratory': [
+        { q: 'Which anticoagulant is primarily used for Complete Blood Counts (CBC)?', options: ['Heparin', 'EDTA', 'Sodium Citrate'], correct: 1, explanation: 'EDTA preserves cellular components and blood cell morphology for hematology testing.' }
+      ],
+      'Health Information Tech (HIT)': [
+        { q: 'What does ICD stand for in health classification systems?', options: ['International Classification of Diseases', 'Internal Coding Data', 'Integrated Clinical Diagnosis'], correct: 0, explanation: 'ICD stands for International Classification of Diseases, maintained by the WHO for diagnostic categorization.' },
+        { q: 'Which system is used to digitize and manage patient records securely?', options: ['EHR (Electronic Health Record)', 'PACS', 'LIS'], correct: 0, explanation: 'EHR systems collect, store, and share digital health records across healthcare settings.' }
+      ],
+      'Midwifery': [
+        { q: 'What tool is used to monitor labor progress and fetal well-being?', options: ['Partograph', 'Stethoscope', 'Fetoscope'], correct: 0, explanation: 'A Partograph is a graphical tool used to monitor maternal and fetal progress during labor.' },
+        { q: 'What is the primary medication used to prevent Postpartum Hemorrhage (PPH)?', options: ['Oxytocin', 'Magnesium Sulfate', 'Amoxicillin'], correct: 0, explanation: 'Oxytocin is the first-line uterotonic medication administered to prevent and treat uterine atony and PPH.' }
+      ]
+    };
+
+    let currentQuestions = [], currentIndex = 0, selectedOptionIndex = null, score = 0, isAnswerChecked = false;
+
+    function startExam(deptName) {
+      document.getElementById('deptSelectionView').style.display = 'none';
+      document.getElementById('quizContentView').style.display = 'block';
+      document.getElementById('questionCard').style.display = 'block';
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('activeDeptName').textContent = deptName;
+      currentQuestions = deptQuestions[deptName] || [];
+      currentIndex = 0; score = 0;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      selectedOptionIndex = null; isAnswerChecked = false;
+      const qData = currentQuestions[currentIndex];
+      if (!qData) { showResults(); return; }
+
+      document.getElementById('qCounter').textContent = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+      document.getElementById('qText').textContent = qData.q;
+      document.getElementById('aiFeedbackBox').style.display = 'none';
+      
+      const mainBtn = document.getElementById('mainActionBtn');
+      mainBtn.textContent = 'Check Answer';
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      qData.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span>${optText}</span><i class="fa-regular fa-circle"></i>`;
+        btn.onclick = () => selectOption(btn, idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(btn, idx) {
+      if (isAnswerChecked) return;
+      selectedOptionIndex = idx;
+      document.querySelectorAll('.option-btn').forEach((b, i) => {
+        b.style.borderColor = (i === idx) ? "var(--primary-green)" : "var(--card-border)";
+      });
+    }
+
+    function handleAction() {
+      if (!isAnswerChecked) {
+        if (selectedOptionIndex === null) { alert('Please select an answer first!'); return; }
+        verifyAnswer();
+      } else {
+        currentIndex++;
+        if (currentIndex < currentQuestions.length) loadQuestion();
+        else showResults();
+      }
+    }
+
+    function verifyAnswer() {
+      isAnswerChecked = true;
+      const currentQ = currentQuestions[currentIndex];
+      const allBtns = document.querySelectorAll('.option-btn');
+
+      if (selectedOptionIndex === currentQ.correct) {
+        score++;
+        allBtns[selectedOptionIndex].classList.add('correct-ans');
+        allBtns[selectedOptionIndex].querySelector('i').className = "fa-solid fa-circle-check";
+      } else {
+        allBtns[selectedOptionIndex].classList.add('wrong-ans');
+        allBtns[selectedOptionIndex].querySelector('i').className = "fa-solid fa-circle-xmark";
+        allBtns[currentQ.correct].classList.add('correct-ans');
+        allBtns[currentQ.correct].querySelector('i').className = "fa-solid fa-circle-check";
+      }
+
+      document.getElementById('aiExplanationText').textContent = currentQ.explanation;
+      document.getElementById('aiFeedbackBox').style.display = 'block';
+      document.getElementById('mainActionBtn').textContent = (currentIndex + 1 === currentQuestions.length) ? 'View Final Results' : 'Next Question';
+    }
+
+    function showResults() {
+      document.getElementById('questionCard').style.display = 'none';
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('scoreText').textContent = `You scored ${score} out of ${currentQuestions.length}`;
+
+      const activeDept = document.getElementById('activeDeptName').textContent;
+      const examStats = {
+        lastDepartment: activeDept,
+        score: score,
+        totalQuestions: currentQuestions.length
+      };
+      localStorage.setItem("coc_exam_stats", JSON.stringify(examStats));
+    }
+
+    function showDepartments() {
+      document.getElementById('deptSelectionView').style.display = 'block';
+      document.getElementById('quizContentView').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
