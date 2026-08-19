@@ -510,11 +510,19 @@
       </div>
 
       <!-- LOGOUT BUTTON -->
-      <button class="logout-btn-nav" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    </div>
-  </nav>
+      <!-- የ Logout Button አጻጻፍ -->
+<button onclick="logoutUser()" class="logout-btn">Logout</button>
+
+<script>
+function logoutUser() {
+    // የተቀመጡ የተጠቃሚ መረጃዎች (Token/Session) ካሉ ለማፅዳት
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // በቀጥታ ወደ register.html ለመመለስ
+    window.location.href = '/register.html';
+}
+</script>
 
   <!-- HERO BANNER SECTION -->
   <section class="hero-section">
