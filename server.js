@@ -27,9 +27,9 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: "እባክዎ ጥያቄዎን ያስገቡ።" });
     }
 
-    // gemini-2.5-flash ወይም gemini-1.5-flash-latest መጠቀም
+    // gemini-3.6-flash ሞዴልን መጠቀም
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
