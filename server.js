@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 
-// CORS Headers (ምንም ተጨማሪ 'cors' package ሳይፈልግ)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -13,7 +12,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use(express.static('./')); // HTML ፋይሎችን ለማስተናገድ
+app.use(express.static('./'));
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -21,26 +20,21 @@ app.post('/api/chat', async (req, res) => {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ error: "GEMINI_API_KEY በ Render Environment ላይ አልተዘጋጀም!" });
+      return res.status(500).json({ error: "GEMINI_API_KEY በ Render ላይ አልተዘጋጀም!" });
     }
 
     if (!message) {
       return res.status(400).json({ error: "እባክዎ ጥያቄዎን ያስገቡ።" });
     }
 
-    // በ Node.js v24 አብሮ በሚመጣው fetch የ Gemini REST API ን በቀጥታ መጥራት
+    // gemini-2.5-flash ወይም gemini-1.5-flash-latest መጠቀም
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ text: message }]
-            }
-          ],
+          contents: [{ role: 'user', parts: [{ text: message }] }],
           systemInstruction: {
             parts: [{ text: "You are Educaeet AI, a helpful medical academic assistant for students at Mizan-Aman Health Science College." }]
           }
@@ -64,6 +58,4 @@ app.post('/api/chat', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
