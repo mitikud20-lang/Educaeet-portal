@@ -1,39 +1,64 @@
 const express = require('express');
-const cors = require('cors');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
 const app = express();
 
-app.use(cors());
+// CORS Headers (ምንም ተጨማሪ 'cors' package ሳይፈልግ)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    return res.status(200).json({});
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.static('./')); // HTML ፋይሎችን ለማስተናገድ
-
-// API Key ከ Render Environment Variable ይወሰዳል
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
 
 app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({ error: "GEMINI_API_KEY በ Render Environment ላይ አልተዘጋጀም!" });
+    }
 
     if (!message) {
       return res.status(400).json({ error: "እባክዎ ጥያቄዎን ያስገቡ።" });
     }
 
-    // በ 2026 የሚሰራው ትክክለኛው የሞዴል ስም gemini-1.5-flash ነው
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: "You are Educaeet AI, a helpful medical academic assistant for students at Mizan-Aman Health Science College."
-    });
+    // በ Node.js v24 አብሮ በሚመጣው fetch የ Gemini REST API ን በቀጥታ መጥራት
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: message }]
+            }
+          ],
+          systemInstruction: {
+            parts: [{ text: "You are Educaeet AI, a helpful medical academic assistant for students at Mizan-Aman Health Science College." }]
+          }
+        })
+      }
+    );
 
-    const result = await model.generateContent(message);
-    const response = await result.response;
-    const text = response.text();
+    const data = await response.json();
 
-    res.json({ reply: text });
+    if (!response.ok) {
+      throw new Error(data.error?.message || "የ Gemini API ስህተት");
+    }
+
+    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "ምንም መልስ አልተገኘም።";
+    res.json({ reply: replyText });
 
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    console.error("Error:", error);
     res.status(500).json({ error: error.message || "የ AI ረዳቱ ላይ ስህተት ተፈጥሯል!" });
   }
 });
