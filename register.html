@@ -421,7 +421,7 @@
         document.getElementById("step2").style.display = "block";
       });
 
-      // Step 2: ፎቶውንና መረጃውን ወደ Node.js Backend (ከዚያ ወደ Telegram) መላክ
+      // Step 2: ፎቶውንና መረጃውን ወደ Backend (ከዚያ ወደ Telegram) መላክ
       paymentForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -450,8 +450,8 @@
         formData.append("receipt", file);
 
         try {
-          // ወደ Backend API መላክ (የserver URLህ አድራሻ)
-          const response = await fetch("http://localhost:5000/api/register", {
+          // Relative path አጠቃቀም፡ Frontend እና Backend በተመሳሳይ ሰርቨር/Domain ስለሚስተናገዱ '/api/register' መጠቀም ይቻላል
+          const response = await fetch("/api/register", {
             method: "POST",
             body: formData
           });
