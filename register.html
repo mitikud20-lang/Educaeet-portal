@@ -41,7 +41,7 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      margin-top: 20px; /* ቦክሱን ትንሽ ዝቅ ለማድረግ */
+      margin-top: 20px;
     }
 
     /* LOGO & BRANDING */
@@ -203,6 +203,22 @@
       font-size: 0.8rem;
     }
 
+    /* CBE INFO BOX */
+    .cbe-info-box {
+      background: #fdf4ff;
+      border: 1.5px dashed #c084fc;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 0.78rem;
+      color: #581c87;
+      line-height: 1.6;
+    }
+
+    .cbe-info-box b {
+      color: #7e22ce;
+    }
+
     .submit-btn {
       width: 100%;
       background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
@@ -227,8 +243,9 @@
       box-shadow: 0 12px 24px rgba(6, 78, 59, 0.35);
     }
 
-    .submit-btn:active {
-      transform: translateY(0);
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .footer-text {
@@ -277,59 +294,86 @@
 
     <!-- REGISTRATION FORM CARD -->
     <div class="form-card">
-      <div class="form-title">ተማሪዎች ይመዝገቡ / Register</div>
-      <div class="form-subtitle">መረጃዎትን በማስገባት ወደ ትምህርት ፖርታሉ ይግቡ</div>
+      
+      <!-- STEP 1: REGISTRATION DETAILS -->
+      <div id="step1">
+        <div class="form-title">ተማሪዎች ይመዝገቡ / Register</div>
+        <div class="form-subtitle">መረጃዎትን በማስገባት ወደ ትምህርት ፖርታሉ ይግቡ</div>
 
-      <form id="registerForm">
-        <!-- FULL NAME -->
-        <div class="form-group">
-          <label for="studentName">ሙሉ ስም (Full Name)</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" id="studentName" class="form-control" placeholder="ምሳሌ፡ ዳዊት ካሳሁን" required>
+        <form id="infoForm">
+          <div class="form-group">
+            <label for="studentName">ሙሉ ስም (Full Name)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="studentName" class="form-control" placeholder="ምሳሌ፡ ዳዊት ካሳሁን" required>
+            </div>
           </div>
+
+          <div class="form-group">
+            <label for="studentId">መታወቂያ ቁጥር (Student ID)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-id-card"></i>
+              <input type="text" id="studentId" class="form-control" placeholder="ምሳሌ፡ MAHSC/1024/15" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="studentEmail">ኢሜይል (Email Address)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="studentEmail" class="form-control" placeholder="ምሳሌ፡ dawit@gmail.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="studentDept">የትምህርት ክፍል (Department)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user-doctor"></i>
+              <select id="studentDept" class="form-control" required>
+                <option value="" disabled selected>የትምህርት ዘርፍ ይምረጡ</option>
+                <option value="Nursing">Nursing (ነርሲንግ)</option>
+                <option value="Health Informatics (HIT)">Health Informatics (HIT)</option>
+                <option value="Midwifery">Midwifery (ሚድዋይፈሪ)</option>
+                <option value="Medical Laboratory Technology">Medical Laboratory Technology (ላቦራቶሪ)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+            </div>
+          </div>
+
+          <button type="button" class="submit-btn" id="nextBtn">
+            <span>ቀጥል ወደ ክፍያ</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: CBE PAYMENT & SCREENSHOT -->
+      <div id="step2" style="display: none;">
+        <div class="form-title">የ 30 ብር ክፍያ ማረጋገጫ</div>
+        <div class="form-subtitle">ክፍያውን ፈጽመው ደረሰኙን (Screenshot) ያስገቡ</div>
+
+        <div class="cbe-info-box">
+          <i class="fa-solid fa-building-columns"></i> <b>የኢትዮጵያ ንግድ ባንክ (CBE)</b><br>
+          <b>የሂሳብ ቁጥር፦</b> <code>1000XXXXXXXXX</code><br>
+          <b>ስም፦</b> [የአንተ ስም እዚህ ፃፍ]
         </div>
 
-        <!-- STUDENT ID -->
-        <div class="form-group">
-          <label for="studentId">መታወቂያ ቁጥር (Student ID)</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-id-card"></i>
-            <input type="text" id="studentId" class="form-control" placeholder="ምሳሌ፡ MAHSC/1024/15" required>
+        <form id="paymentForm">
+          <div class="form-group">
+            <label for="receiptImage">የከፈሉበትን ደረሰኝ (Screenshot)</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-file-image"></i>
+              <input type="file" id="receiptImage" class="form-control" accept="image/*" required style="padding-top: 10px;">
+            </div>
           </div>
-        </div>
 
-        <!-- EMAIL ADDRESS -->
-        <div class="form-group">
-          <label for="studentEmail">ኢሜይል (Email Address)</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-envelope"></i>
-            <input type="email" id="studentEmail" class="form-control" placeholder="ምሳሌ፡ dawit@gmail.com" required>
-          </div>
-        </div>
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span id="btnText">ምዝገባውን ጨርስና ወደ ፖርታል ግባ</span>
+            <i class="fa-solid fa-check-circle" id="btnIcon"></i>
+          </button>
+        </form>
+      </div>
 
-        <!-- DEPARTMENT SELECT -->
-        <div class="form-group">
-          <label for="studentDept">የትምህርት ክፍል (Department)</label>
-          <div class="input-wrapper">
-            <i class="fa-solid fa-user-doctor"></i>
-            <select id="studentDept" class="form-control" required>
-              <option value="" disabled selected>የትምህርት ዘርፍ ይምረጡ</option>
-              <option value="Nursing">Nursing (ነርሲንግ)</option>
-              <option value="Health Informatics (HIT)">Health Informatics (HIT)</option>
-              <option value="Midwifery">Midwifery (ሚድዋይፈሪ)</option>
-              <option value="Medical Laboratory Technology">Medical Laboratory Technology (ላቦራቶሪ)</option>
-            </select>
-            <i class="fa-solid fa-chevron-down select-arrow"></i>
-          </div>
-        </div>
-
-        <!-- SUBMIT BUTTON -->
-        <button type="submit" class="submit-btn">
-          <span>መዝግብና ወደ ፖርታል ግባ</span>
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </form>
     </div>
 
     <div class="footer-text">
@@ -340,19 +384,22 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const registerForm = document.getElementById("registerForm");
-
-      // ከተመዘገቡ በኋላ በድጋሚ ወደ register.html እንዳይመጡ መፈተሽ
+      // 1. መጀመሪያ ተመዝግበው ከነበረ ቀጥታ ወደ dashboard ይላካሉ
       const isLoggedIn = localStorage.getItem("educaeet_is_logged_in");
       if (isLoggedIn === "true") {
         window.location.href = "dashboard.html";
         return;
       }
 
-      // Submit Form
-      registerForm.addEventListener("submit", (e) => {
-        e.preventDefault();
+      const nextBtn = document.getElementById("nextBtn");
+      const paymentForm = document.getElementById("paymentForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
 
+      let userProfileData = {};
+
+      // Step 1: የተማሪ መረጃ መፈተሽ
+      nextBtn.addEventListener("click", () => {
         const studentName = document.getElementById("studentName").value.trim();
         const studentId = document.getElementById("studentId").value.trim();
         const studentEmail = document.getElementById("studentEmail").value.trim();
@@ -363,23 +410,75 @@
           return;
         }
 
-        // Save User Profile to Local Storage
-        const userProfile = {
+        userProfileData = {
           name: studentName,
-          id: studentId,
+          studentId: studentId,
           email: studentEmail,
           department: studentDept
         };
 
-        localStorage.setItem("educaeet_user_profile", JSON.stringify(userProfile));
-        localStorage.setItem("educaeet_is_logged_in", "true");
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+      });
 
-        // Redirect to Dashboard
-        window.location.href = "dashboard.html";
+      // Step 2: ፎቶውንና መረጃውን ወደ Node.js Backend (ከዚያ ወደ Telegram) መላክ
+      paymentForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const receiptInput = document.getElementById("receiptImage");
+        if (receiptInput.files.length === 0) {
+          alert("እባክዎን የከፈሉበትን የ CBE ስክሪንሾት ያስገቡ!");
+          return;
+        }
+
+        const file = receiptInput.files[0];
+        if (!file.type.startsWith("image/")) {
+          alert("እባክዎን ምስል (Screenshot) ብቻ ያስገቡ!");
+          return;
+        }
+
+        // Button Loading State
+        submitBtn.disabled = true;
+        btnText.innerText = "መረጃው እየተላከ ነው...";
+
+        // FormData ማዘጋጀት
+        const formData = new FormData();
+        formData.append("name", userProfileData.name);
+        formData.append("studentId", userProfileData.studentId);
+        formData.append("email", userProfileData.email);
+        formData.append("department", userProfileData.department);
+        formData.append("receipt", file);
+
+        try {
+          // ወደ Backend API መላክ (የserver URLህ አድራሻ)
+          const response = await fetch("http://localhost:5000/api/register", {
+            method: "POST",
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Local Storage ላይ ማስቀመጥ
+            localStorage.setItem("educaeet_user_profile", JSON.stringify(userProfileData));
+            localStorage.setItem("educaeet_is_logged_in", "true");
+
+            alert("ምዝገባዎ ተሳክቷል! ወደ ዋናው Dashboard ይዛወራሉ።");
+            window.location.href = "dashboard.html";
+          } else {
+            alert("ስህተት፡ " + result.message);
+            submitBtn.disabled = false;
+            btnText.innerText = "ምዝገባውን ጨርስና ወደ ፖርታል ግባ";
+          }
+        } catch (error) {
+          console.error(error);
+          alert("ከሰርቨር ጋር መገናኘት አልተቻለም። እባክዎ የበይነመረብ (Internet) ግንኙነትዎን ያረጋግጡ!");
+          submitBtn.disabled = false;
+          btnText.innerText = "ምዝገባውን ጨርስና ወደ ፖርታል ግባ";
+        }
       });
     });
   </script>
 
 </body>
 </html>
-
